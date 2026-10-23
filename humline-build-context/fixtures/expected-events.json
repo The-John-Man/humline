@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Original synthetic test signals generated for Humline; not human humming.",
+  "onsetEndToleranceSeconds": 0.1,
+  "fixtures": [
+    {
+      "file": "melody-clean.wav",
+      "sampleRate": 44100,
+      "channels": 1,
+      "durationSeconds": 6.1,
+      "events": [
+        {
+          "midi": 57,
+          "startSeconds": 0.35,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 60,
+          "startSeconds": 1.15,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 64,
+          "startSeconds": 1.95,
+          "durationSeconds": 0.95
+        },
+        {
+          "midi": 62,
+          "startSeconds": 3.05,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 60,
+          "startSeconds": 3.85,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 57,
+          "startSeconds": 4.65,
+          "durationSeconds": 1.2
+        }
+      ]
+    },
+    {
+      "file": "melody-48k-stereo.wav",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSeconds": 6.1,
+      "events": [
+        {
+          "midi": 57,
+          "startSeconds": 0.35,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 60,
+          "startSeconds": 1.15,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 64,
+          "startSeconds": 1.95,
+          "durationSeconds": 0.95
+        },
+        {
+          "midi": 62,
+          "startSeconds": 3.05,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 60,
+          "startSeconds": 3.85,
+          "durationSeconds": 0.65
+        },
+        {
+          "midi": 57,
+          "startSeconds": 4.65,
+          "durationSeconds": 1.2
+        }
+      ]
+    },
+    {
+      "file": "repeated-note.wav",
+      "sampleRate": 44100,
+      "channels": 1,
+      "durationSeconds": 1.9,
+      "events": [
+        {
+          "midi": 57,
+          "startSeconds": 0.2,
+          "durationSeconds": 0.6
+        },
+        {
+          "midi": 57,
+          "startSeconds": 1,
+          "durationSeconds": 0.6
+        }
+      ]
+    },
+    {
+      "file": "vibrato.wav",
+      "sampleRate": 44100,
+      "channels": 1,
+      "durationSeconds": 2.2,
+      "vibrato": true,
+      "events": [
+        {
+          "midi": 57,
+          "startSeconds": 0.2,
+          "durationSeconds": 1.8
+        }
+      ]
+    },
+    {
+      "file": "silence.wav",
+      "sampleRate": 22050,
+      "channels": 1,
+      "durationSeconds": 2,
+      "events": []
+    },
+    {
+      "file": "noise.wav",
+      "sampleRate": 22050,
+      "channels": 1,
+      "durationSeconds": 2,
+      "noise": true,
+      "events": []
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+[
+  {
+    "file": "melody-clean.wav",
+    "elapsedMs": 335.1,
+    "events": [
+      {
+        "midi": 57,
+        "start": 0.3251,
+        "end": 1.0333,
+        "onsetErrorMs": 24.9,
+        "endErrorMs": 33.3
+      },
+      {
+        "midi": 60,
+        "start": 1.1262,
+        "end": 1.8344,
+        "onsetErrorMs": 23.8,
+        "endErrorMs": 34.4
+      },
+      {
+        "midi": 64,
+        "start": 1.9156,
+        "end": 2.9373,
+        "onsetErrorMs": 34.4,
+        "endErrorMs": 37.3
+      },
+      {
+        "midi": 62,
+        "start": 3.0186,
+        "end": 3.7384,
+        "onsetErrorMs": 31.4,
+        "endErrorMs": 38.4
+      },
+      {
+        "midi": 60,
+        "start": 3.8197,
+        "end": 4.5395,
+        "onsetErrorMs": 30.3,
+        "endErrorMs": 39.5
+      },
+      {
+        "midi": 57,
+        "start": 4.6208,
+        "end": 5.8863,
+        "onsetErrorMs": 29.2,
+        "endErrorMs": 36.3
+      }
+    ]
+  },
+  {
+    "file": "melody-48k-stereo.wav",
+    "elapsedMs": 373.6,
+    "events": [
+      {
+        "midi": 57,
+        "start": 0.3251,
+        "end": 1.0333,
+        "onsetErrorMs": 24.9,
+        "endErrorMs": 33.3
+      },
+      {
+        "midi": 60,
+        "start": 1.1262,
+        "end": 1.8344,
+        "onsetErrorMs": 23.8,
+        "endErrorMs": 34.4
+      },
+      {
+        "midi": 64,
+        "start": 1.9156,
+        "end": 2.9373,
+        "onsetErrorMs": 34.4,
+        "endErrorMs": 37.3
+      },
+      {
+        "midi": 62,
+        "start": 3.0186,
+        "end": 3.7384,
+        "onsetErrorMs": 31.4,
+        "endErrorMs": 38.4
+      },
+      {
+        "midi": 60,
+        "start": 3.8197,
+        "end": 4.5395,
+        "onsetErrorMs": 30.3,
+        "endErrorMs": 39.5
+      },
+      {
+        "midi": 57,
+        "start": 4.6208,
+        "end": 5.8863,
+        "onsetErrorMs": 29.2,
+        "endErrorMs": 36.3
+      }
+    ]
+  },
+  {
+    "file": "repeated-note.wav",
+    "elapsedMs": 52.9,
+    "events": [
+      {
+        "midi": 57,
+        "start": 0.1741,
+        "end": 0.8359,
+        "onsetErrorMs": 25.9,
+        "endErrorMs": 35.9
+      },
+      {
+        "midi": 57,
+        "start": 0.9752,
+        "end": 1.637,
+        "onsetErrorMs": 24.8,
+        "endErrorMs": 37
+      }
+    ]
+  },
+  {
+    "file": "vibrato.wav",
+    "elapsedMs": 82.5,
+    "events": [
+      {
+        "midi": 57,
+        "start": 0.1741,
+        "end": 2.0317,
+        "onsetErrorMs": 25.9,
+        "endErrorMs": 31.7
+      }
+    ]
+  },
+  {
+    "file": "silence.wav",
+    "elapsedMs": 4.4,
+    "events": []
+  },
+  {
+    "file": "noise.wav",
+    "elapsedMs": 40.7,
+    "events": []
+  }
+]

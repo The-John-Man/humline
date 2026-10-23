@@ -1,0 +1,15 @@
+/* Proposed design tokens; validate contrast in the implemented UI. */
+:root {
+  --bg: #0b1020;
+  --surface: #141c2f;
+  --surface-raised: #1c2840;
+  --text: #f3f5fa;
+  --text-muted: #aab6cc;
+  --accent: #79e2bd;
+  --note: #b9a5ff;
+  --danger: #ff9a9a;
+  --border: #34435f;
+  --radius: 16px;
+  --space: 8px;
+  --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}

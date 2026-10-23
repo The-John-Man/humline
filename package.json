@@ -1,0 +1,1 @@
+{"name":"humline-workspace","private":true,"scripts":{"dev":"npm --prefix app run dev","build":"npm --prefix app run build","test":"npm --prefix app test","test:browser":"npm --prefix app run test:browser"}}
