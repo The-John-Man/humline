@@ -6,7 +6,11 @@ export function microphoneError(e: unknown): string {
     return 'No microphone found. Connect a microphone and retry, or import audio.';
   if (name === 'NotReadableError')
     return 'Your microphone is busy or unavailable. Close other recording apps and retry.';
-  return e instanceof Error ? e.message : 'Recording failed. Try again or import audio.';
+  if (name === 'NotSupportedError')
+    return 'This browser cannot record audio with the available microphone format. Try current Chrome or Edge, or import audio.';
+  return e instanceof Error && e.message.trim()
+    ? e.message
+    : 'Recording failed. Try again or import audio.';
 }
 export class Capture {
   private recorder?: MediaRecorder;
@@ -44,9 +48,12 @@ export class Capture {
         return;
       }
       this.stream = stream;
-      const mimeType = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4'].find((t) =>
-        MediaRecorder.isTypeSupported(t),
-      );
+      const mimeType = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/ogg;codecs=opus',
+        'audio/mp4',
+      ].find((t) => MediaRecorder.isTypeSupported(t));
       const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       this.recorder = recorder;
       const chunks: BlobPart[] = [];

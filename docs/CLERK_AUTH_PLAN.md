@@ -1,8 +1,6 @@
 # Humline accounts and private melody library — proposal
 
-Status: draft for review, October 24, 2026. No authentication code, dependencies, Clerk resources, or cloud infrastructure have been changed. The user selected accounts with a private cloud melody library. This document describes the proposed implementation, not completed behavior.
-
-Implementation update: the user subsequently authorized work. Integration code and local tests now exist; consult [CLOUD_SETUP.md](CLOUD_SETUP.md) for actual status and deviations. The draft below remains the design reference.
+Status: design reference. Integration is implemented on `codex/clerk-library`; consult [CLOUD_SETUP.md](CLOUD_SETUP.md) for live status, verification, and deviations (notably app-owned `DELETE /api/account` with Clerk reverification plus webhook backup). The sections below retain the original research and acceptance criteria.
 
 ## Product goal
 

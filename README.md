@@ -6,15 +6,15 @@ The implemented loop is **Record / import → Convert → Edit → Play → Expo
 
 ## Accounts and cloud library integration
 
-This branch includes Clerk authentication pages and a PostgreSQL-backed private melody library. **Live accounts require configuration and have not yet been verified against a real Clerk instance.** Follow [cloud setup and current verification](docs/CLOUD_SETUP.md). The public local studio is now at `/demo`; the root page is the welcome screen. Older static ZIPs in `review/` contain the original MVP, not this integration. Historical local-only instructions below apply to that MVP or the current public demo.
+This branch includes Clerk authentication and a PostgreSQL-backed private melody library. **Live sign-in requires your Clerk development keys** — see [cloud setup](docs/CLOUD_SETUP.md). The public local studio is at `/demo`; the root page is the welcome screen. Older static ZIPs in `review/` contain the original MVP, not this integration.
 
 ## Contributor and AI context
 
-Start with [AGENTS.md](AGENTS.md) and the [current handoff](docs/HANDOFF.md). The [challenge requirements](docs/CHALLENGE_REQUIREMENTS.md) capture the user-supplied brief. The [Clerk accounts and private library plan](docs/CLERK_AUTH_PLAN.md) is a researched proposal with screen drafts; the proposal is now being implemented; see the cloud setup document for current status. The instructions below describe the working local music MVP.
+Start with [AGENTS.md](AGENTS.md) and the [current handoff](docs/HANDOFF.md). Challenge rules: [CHALLENGE_REQUIREMENTS.md](docs/CHALLENGE_REQUIREMENTS.md). Design reference: [CLERK_AUTH_PLAN.md](docs/CLERK_AUTH_PLAN.md) (actual status is in cloud setup).
 
-## Run
+## Run the public demo
 
-Use Node **22.12+** (Node 24 recommended) and npm. From the repository root:
+Use Node **22.12+** (Node 24 recommended) and npm:
 
 ```sh
 cd app
@@ -22,9 +22,16 @@ npm ci
 npm run dev
 ```
 
-Open the printed localhost URL, normally `http://localhost:5173`. Recording requires localhost or HTTPS; opening `index.html` with `file://` does not work. The Vite development server binds to `0.0.0.0` for cloud-workspace preview support. A plain HTTP LAN address is not a secure microphone origin.
+Open `http://localhost:5173/demo`. Recording requires localhost or HTTPS; `file://` does not work.
 
-In a managed workspace with an unwritable home-directory npm cache, use `npm ci --cache /tmp/humline-npm-cache` instead. No secrets, accounts, API keys, database, or backend are required.
+## Run accounts + library
+
+1. Start Postgres (`docker compose up -d db`, or a local PostgreSQL with matching credentials).
+2. Copy `app/.env.example` to `app/.env` and add Clerk keys plus `DATABASE_URL`.
+3. `npm run db:migrate` then `npm run dev:full`.
+4. Open `http://localhost:5173`.
+
+Details, deletion webhook notes, and hosting constraints: [docs/CLOUD_SETUP.md](docs/CLOUD_SETUP.md).
 
 ## Use the studio
 
@@ -59,9 +66,10 @@ Verified environment: Node 24.19.0, npm 11.9.0, Chromium 154.0.8037.57, Debian G
 
 ## Deploy
 
-`app/dist/` is a static site, ready for any HTTPS static host. Build with `npm ci && npm run build` in `app/`, then publish `app/dist/` with its `assets/` and `examples/` folders intact. Assets use relative paths, so subdirectory hosting is supported. No runtime environment variables are required. Serve `.js` as JavaScript and `.wav` as audio. A normal top-level HTTPS page is simplest; an embedded preview also needs microphone permissions from its parent.
+- **Demo-only static site:** `app/dist/` after `npm run build`. No accounts/library.
+- **Full app (accounts + library):** Node host serving the Express API and built frontend (`npm start` in `app/`), plus PostgreSQL and Clerk environment variables. See [cloud setup](docs/CLOUD_SETUP.md). A static-only ZIP cannot provide the private library.
 
-No external deployment or hosting account was configured. Local HTTPS was exercised with a test certificate. This app does not include an offline service worker; “local processing” does not promise it can load without a network connection.
+No production host has been chosen or provisioned. Ask before deploying publicly or enabling paid services. Local HTTPS was exercised with a temporary self-signed certificate.
 
 ## Source and handoff
 

@@ -39,7 +39,16 @@ if (process.argv.includes('--migrate')) {
         acceptsToken: 'session_token',
       });
       const auth = result.toAuth();
-      return auth?.userId ? { userId: auth.userId } : null;
+      return auth?.userId ? { userId: auth.userId, has: (params) => auth.has(params) } : null;
+    },
+    deleteClerkUser: async (userId) => {
+      try {
+        await clerk.users.deleteUser(userId);
+      } catch (error) {
+        const status = (error as { status?: number }).status;
+        if (status === 404) return;
+        throw error;
+      }
     },
     deletedUserEvent: async (req) => {
       const headers = new Headers();

@@ -78,10 +78,13 @@ it('retains edits after a failed save and only reports saved after acknowledgmen
     'Keep this idea',
   );
   expect(localStorage.getItem('humline.draft.v1:alice:new')).toContain('Keep this idea');
-  api.mockResolvedValueOnce(result());
+  const saved = result({ ...newProject(), title: 'Keep this idea' });
+  api.mockResolvedValueOnce(saved);
+  api.mockResolvedValueOnce(saved);
   fireEvent.click(screen.getByRole('button', { name: 'Save melody' }));
   await screen.findByText('Saved to your library');
   expect(JSON.parse(api.mock.calls[1][1].body).project.title).toBe('Keep this idea');
+  await waitFor(() => expect(api.mock.calls.some((call) => call[0] === `/melodies/${saved.id}`)));
 });
 it('blocks navigation and does not leave when Save and leave fails', async () => {
   api.mockRejectedValueOnce(new Error('Offline'));

@@ -123,6 +123,10 @@ export class Repository {
         'INSERT INTO accounts(clerk_user_id, deleting) VALUES($1,true) ON CONFLICT(clerk_user_id) DO UPDATE SET deleting=true',
         [owner],
       );
+      // Serialize with in-flight saves that hold the account row lock.
+      await client.query('SELECT deleting FROM accounts WHERE clerk_user_id=$1 FOR UPDATE', [
+        owner,
+      ]);
       await client.query('DELETE FROM melodies WHERE owner_clerk_user_id=$1', [owner]);
       await client.query('COMMIT');
       // Keep the tombstone: delayed requests or duplicate webhooks cannot recreate this account.

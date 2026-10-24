@@ -17,7 +17,9 @@ export default defineConfig({
       args: [
         '--no-sandbox',
         '--use-fake-device-for-media-stream',
-        `--use-file-for-fake-audio-capture=${resolve('../humline-build-context/fixtures/melody-clean.wav')}`,
+        '--use-fake-ui-for-media-stream',
+        // Chromium accepts OS paths; normalize separators for Windows runners.
+        `--use-file-for-fake-audio-capture=${resolve('../humline-build-context/fixtures/melody-clean.wav').replaceAll('\\', '/')}`,
       ],
     },
   },

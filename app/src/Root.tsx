@@ -7,12 +7,21 @@ import {
   useClerk,
   useUser,
 } from '@clerk/react';
-import { Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
+import {
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
 import { useEffect, useState, type ReactNode } from 'react';
 import { AudioLines } from 'lucide-react';
 import App from './App';
 import { Library } from './cloud/Library';
 import { CloudStudio } from './cloud/CloudStudio';
+import { DeleteAccount } from './cloud/DeleteAccount';
 import { clearDrafts } from './cloud/client';
 import './styles/accounts.css';
 
@@ -63,9 +72,14 @@ function Welcome() {
     </>
   );
 }
+function safeInternalPath(value: string | null) {
+  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/melodies';
+}
 function AuthPage({ signUp = false }: { signUp?: boolean }) {
   const { isLoaded, isSignedIn } = useAuth();
-  if (isLoaded && isSignedIn) return <Navigate to="/melodies" replace />;
+  const [params] = useSearchParams();
+  const redirectUrl = safeInternalPath(params.get('redirect_url'));
+  if (isLoaded && isSignedIn) return <Navigate to={redirectUrl} replace />;
   return (
     <>
       <header className="account-header">
@@ -85,9 +99,21 @@ function AuthPage({ signUp = false }: { signUp?: boolean }) {
         </section>
         <section aria-label={signUp ? 'Create your account' : 'Sign in'}>
           {signUp ? (
-            <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" />
+            <SignUp
+              routing="path"
+              path="/sign-up"
+              signInUrl="/sign-in"
+              forceRedirectUrl={redirectUrl}
+              fallbackRedirectUrl="/melodies"
+            />
           ) : (
-            <SignIn routing="path" path="/sign-in" signUpUrl="/sign-up" />
+            <SignIn
+              routing="path"
+              path="/sign-in"
+              signUpUrl="/sign-up"
+              forceRedirectUrl={redirectUrl}
+              fallbackRedirectUrl="/melodies"
+            />
           )}
         </section>
       </main>
@@ -171,10 +197,12 @@ function SignedRoutes() {
             <main className="account-page">
               <h1>Your account</h1>
               <p>
-                Manage your profile and security. Deleting your account also schedules removal of
-                your cloud melodies. Download any projects you want to keep first.
+                Manage your profile, email, connected accounts, and security settings. Use the
+                Humline deletion section below when you want cloud melodies removed immediately with
+                your account.
               </p>
               <UserProfile routing="path" path="/account" />
+              <DeleteAccount />
             </main>
           </Protected>
         }

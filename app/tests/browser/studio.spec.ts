@@ -114,8 +114,14 @@ test('bad audio and silent input recover; project import validates before replac
   await page.getByRole('button', { name: 'Keep current melody' }).click();
   await expect(page.locator('.note')).toHaveCount(6);
 });
-test('permission denied is recoverable with import', async ({ page, context }) => {
-  await context.clearPermissions();
+test('permission denied is recoverable with import', async ({ page }) => {
+  // Fake-device Chromium auto-accepts prompts; deny explicitly so the recovery path is tested.
+  await page.addInitScript(() => {
+    void navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => undefined);
+    navigator.mediaDevices.getUserMedia = async () => {
+      throw new DOMException('Permission denied', 'NotAllowedError');
+    };
+  });
   await page.goto('/demo');
   await page.getByRole('button', { name: 'Record a melody', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Microphone access was denied');

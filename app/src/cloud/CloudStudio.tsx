@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Link, useBlocker, useParams, useSearchParams } from 'react-router';
+import { Link, useBlocker, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useAuth, useClerk } from '@clerk/react';
 import App from '../App';
 import { newProject, parseProject } from '../state/project';
@@ -91,6 +91,7 @@ function Editor({
   onReload: () => void;
 }) {
   const api = useApi(),
+    navigate = useNavigate(),
     { userId } = useAuth(),
     { signOut } = useClerk();
   const [project, setProject] = useState(initial.project),
@@ -153,12 +154,30 @@ function Editor({
         },
       );
       if (!alive.current) return false;
+      const created = !remote || copy;
       setRemote(saved);
       setAcknowledged(sent);
       setRecovered(false);
       setConflict(false);
       // A save can finish after a newer edit. A leave action must not discard that edit.
-      return latestFingerprint.current === sent;
+      const caughtUp = latestFingerprint.current === sent;
+      if (created && caughtUp) {
+        try {
+          localStorage.setItem(
+            draftKey(userId!, saved.id),
+            JSON.stringify({
+              project: saved.project,
+              remoteId: saved.id,
+              revision: saved.revision,
+            }),
+          );
+          localStorage.removeItem(storageKey);
+        } catch {
+          /* Navigation still lands on the server identity. */
+        }
+        navigate(`/studio/${saved.id}`, { replace: true });
+      }
+      return caughtUp;
     } catch (e) {
       if (alive.current) {
         setError(e instanceof Error ? e.message : 'Could not save.');

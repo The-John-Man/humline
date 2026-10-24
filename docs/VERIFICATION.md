@@ -1,13 +1,30 @@
 # Verification report
 
-Verified October 23, 2026, using Node 24.19.0 / npm 11.9.0 / Chromium 154.0.8037.57 on Debian GNU/Linux 13. The final browser run exercised the compiled production application, not Vite's development server.
+## Clerk/library branch (October 24, 2026)
 
-## Results
+Environment: Node 24.16.0 / npm 11.13.0 / Playwright Chromium on Windows 11, local PostgreSQL 17.
+
+| Check | Result |
+|---|---|
+| `npm test` in `app/` | PASS: 35 tests (DSP, editor, lifecycle, library/API including app-owned deletion, cloud-editor). Real disposable `humline_test` Postgres used when `TEST_DATABASE_URL` is set. |
+| `npm run build` | PASS |
+| `npm run test:browser` | PASS: 13 tests (welcome/demo routes + studio). |
+| `npm run test:https` | PASS (OpenSSL via Git for Windows when needed). |
+| `npm run db:migrate` | PASS |
+| `npm run test:clerk` | **NOT RUN — Clerk development credentials required** |
+| Human microphone / human-hum quality | **NOT VERIFIED — user participation required** |
+| Public deployment | Not performed |
+
+See [CLOUD_SETUP.md](CLOUD_SETUP.md) for configuration and remaining auth checks.
+
+## Original music MVP (October 23, 2026)
+
+Verified using Node 24.19.0 / npm 11.9.0 / Chromium 154.0.8037.57 on Debian GNU/Linux 13. The final browser run exercised the compiled production application, not Vite's development server.
 
 | Check | Result |
 |---|---|
 | Supplied context integrity | PASS: all 26 manifest files and six WAV fixtures |
-| `npm test` in `app/` | PASS: 20 tests in three files |
+| `npm test` in `app/` | PASS: 20 tests in three files (MVP baseline before library cases) |
 | `npm run build` | PASS: strict TypeScript check and Vite production bundle |
 | `npm run test:browser` | PASS: 11 tests, final full run 47.2 seconds |
 | `npm run test:https` | PASS: static assets, worker conversion, synthetic microphone capture over local HTTPS |

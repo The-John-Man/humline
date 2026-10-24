@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 test('welcome explains the workflow and public demo stays accessible', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Hum a melody. Make it yours.' })).toBeVisible();
-  await page.getByRole('link', { name: 'Try the synthetic demo' }).click();
+  await page.getByRole('link', { name: /Try the synthetic demo/ }).click();
   await expect(page.getByText('Local demo', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Record a melody', exact: true })).toBeVisible();
 });

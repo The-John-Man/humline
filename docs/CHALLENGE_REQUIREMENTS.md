@@ -33,6 +33,6 @@ Proposed specific user profile: a songwriter who captures ideas by humming and f
 
 The existing browser studio fits a stack-independent submission. Its current transcription algorithm is signal processing, not an autonomous AI agent. Responsive browser layouts do not make it an Expo app.
 
-The user has now requested planning for Clerk authentication and selected a private cloud melody library. Proposed value: save an edited melody under an account and resume it on another device. Clerk would provide the identity/session foundation for private project ownership. Demonstrate this with a real sign-in, cross-device save/reopen, account management, and verified cross-user isolation; the integration remains unimplemented.
+Clerk authentication and a private cloud melody library are implemented on `codex/clerk-library`. Value: save an edited melody under an account and resume it on another device. Demonstrate with real sign-in, cross-device save/reopen, account management, and verified cross-user isolation once a Clerk development instance is configured (`npm run test:clerk` plus manual checks).
 
-Production evidence still needed includes real-user testing, human-hum quality, physical microphone/output and DAW checks, plus secure hosted storage/authentication if the Clerk extension proceeds. See [handoff](HANDOFF.md) and [Clerk plan](CLERK_AUTH_PLAN.md).
+Production evidence still needed includes real-user testing, human-hum quality, physical microphone/output and DAW checks, and a chosen hosted deployment. See [handoff](HANDOFF.md) and [cloud setup](CLOUD_SETUP.md).

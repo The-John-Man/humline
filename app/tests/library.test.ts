@@ -44,8 +44,9 @@ describe('private library API', () => {
       origins: [origin],
       authenticate: async (req) => {
         const token = req.headers.authorization?.slice(7);
-        return token === 'alice' || token === 'bob' ? { userId: token } : null;
+        return token === 'alice' || token === 'bob' ? { userId: token, has: () => true } : null;
       },
+      deleteClerkUser: async () => undefined,
       deletedUserEvent: async (req) => {
         if (req.get('test-signature') !== 'valid')
           throw new ApiError(400, 'Invalid webhook signature.');
@@ -143,6 +144,47 @@ describe('private library API', () => {
       .expect(204);
     expect((await pool.query('SELECT * FROM melodies')).rows).toEqual([]);
     await auth(request(app).post('/api/melodies')).send(payload()).expect(403);
+    await auth(request(app).get('/api/melodies')).expect(403);
+  });
+  it('app-owned account deletion blocks immediately, removes melodies, and deletes identity', async () => {
+    const deleted: string[] = [];
+    let recent = false;
+    app = createApi({
+      repository,
+      origins: [origin],
+      authenticate: async (req) => {
+        const token = req.headers.authorization?.slice(7);
+        return token === 'alice' ? { userId: 'alice', has: () => recent } : null;
+      },
+      deleteClerkUser: async (userId) => {
+        deleted.push(userId);
+      },
+      deletedUserEvent: async () => null,
+    });
+    const { body } = await auth(request(app).post('/api/melodies')).send(payload()).expect(201);
+    await auth(request(app).delete('/api/account')).expect(403);
+    expect(deleted).toEqual([]);
+    await auth(request(app).get(`/api/melodies/${body.id}`)).expect(200);
+    recent = true;
+    await auth(request(app).delete('/api/account')).expect(204);
+    expect(deleted).toEqual(['alice']);
+    await auth(request(app).get('/api/melodies')).expect(403);
+    await auth(request(app).post('/api/melodies')).send(payload()).expect(403);
+    await auth(request(app).delete('/api/account')).expect(204);
+    expect(deleted).toEqual(['alice', 'alice']);
+  });
+  it('keeps the deletion tombstone when Clerk identity removal fails so the client can retry', async () => {
+    app = createApi({
+      repository,
+      origins: [origin],
+      authenticate: async () => ({ userId: 'alice', has: () => true }),
+      deleteClerkUser: async () => {
+        throw new Error('Clerk unavailable');
+      },
+      deletedUserEvent: async () => null,
+    });
+    await auth(request(app).post('/api/melodies')).send(payload()).expect(201);
+    await auth(request(app).delete('/api/account')).expect(503);
     await auth(request(app).get('/api/melodies')).expect(403);
   });
   it('paginates only the current user library', async () => {

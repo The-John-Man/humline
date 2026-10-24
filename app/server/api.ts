@@ -4,14 +4,18 @@ import { parseProject } from '../src/state/project';
 import { cloudProject } from '../src/cloud/model';
 import { ApiError, Repository } from './repository';
 
+export type ReverificationLevel = 'strict_mfa' | 'strict' | 'moderate' | 'lax';
 export interface Identity {
   userId: string;
+  has: (params: { reverification: ReverificationLevel }) => boolean;
 }
 export interface ApiOptions {
   repository: Repository;
   authenticate: (request: Request) => Promise<Identity | null>;
   origins: string[];
   deletedUserEvent: (request: Request) => Promise<string | null>;
+  /** Removes the Clerk identity after local melody cleanup. Idempotent if already gone. */
+  deleteClerkUser: (userId: string) => Promise<void>;
 }
 export function createApi(options: ApiOptions) {
   const app = express();
@@ -50,6 +54,7 @@ export function createApi(options: ApiOptions) {
     const identity = await options.authenticate(req);
     if (!identity) throw new ApiError(401, 'Please sign in again.');
     res.locals.userId = identity.userId;
+    res.locals.identity = identity;
     next();
   });
   app.use(
@@ -99,6 +104,31 @@ export function createApi(options: ApiOptions) {
   });
   app.delete('/api/melodies/:id', async (req, res) => {
     await options.repository.remove(owner(res), String(req.params.id));
+    res.sendStatus(204);
+  });
+  // App-owned deletion: block writes immediately, remove melodies, then delete the Clerk user.
+  // Signed user.deleted webhooks remain the backup for Dashboard-initiated removals.
+  app.delete('/api/account', async (_req, res) => {
+    const identity = res.locals.identity as Identity;
+    if (!identity.has({ reverification: 'strict' })) {
+      res.status(403).json({
+        clerk_error: {
+          type: 'forbidden',
+          reason: 'reverification-error',
+          metadata: { reverification: 'strict' },
+        },
+      });
+      return;
+    }
+    await options.repository.deleteAccount(identity.userId);
+    try {
+      await options.deleteClerkUser(identity.userId);
+    } catch {
+      throw new ApiError(
+        503,
+        'Your melodies are blocked for deletion, but identity removal needs a retry.',
+      );
+    }
     res.sendStatus(204);
   });
   app.use('/api', (_req, _res, next) => next(new ApiError(404, 'API route not found.')));

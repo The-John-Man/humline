@@ -1,82 +1,57 @@
 # Humline handoff
 
-Last updated: October 24, 2026. This is a historical snapshot for a new contributor or AI session; inspect Git, the current conversation, and live PR state before acting.
+Last updated: October 24, 2026. Inspect Git, the current conversation, and live PR state before acting.
 
-## Current continuation update
+## Current state
 
-The user authorized starting and finishing integration work. Branch `codex/clerk-library` now contains Clerk pages, private-library API/PostgreSQL storage, account-scoped recovery, conflict handling, and tests. See [cloud setup](CLOUD_SETUP.md). Real Clerk flows and production deployment remain unverified pending configuration. The earlier snapshot below describes the original MVP and planning history, not the current code state.
+Humline is a React/TypeScript/Vite browser music studio plus Clerk accounts and a private PostgreSQL melody library on branch `codex/clerk-library`.
 
-## What exists
+Working loop: Record/import → Convert → Piano-roll edit → Instrument playback → MIDI export. Audio analysis runs locally in a worker with Pitchy. Cloud saves store notes/settings only.
 
-Humline is a working React/TypeScript/Vite browser music studio: Record/import → Convert → Piano-roll edit → Instrument playback → MIDI export. Audio analysis runs locally in a worker with Pitchy. Web Audio provides Keys, Pluck, and Pad. The edited note model drives MIDI export through @tonejs/midi.
+Integration commit base: `19d9028` (Clerk/library). Follow-up work on this branch adds app-owned account deletion with reverification, post-save studio navigation, safer auth redirects, Windows-friendly browser/HTTPS verification, and documentation updates.
 
-There is no implemented Clerk authentication, account system, backend, or cloud database. Project notes/settings persist under a single localStorage key and can be backed up as JSON. Original audio is memory-only and disappears on refresh.
+[PR #1](https://github.com/The-John-Man/humline/pull/1) — original music MVP (`codex/humline-mvp` → `main`).  
+[PR #2](https://github.com/The-John-Man/humline/pull/2) — Clerk/library integration (`codex/clerk-library`). Inspect its base: it was stacked on the MVP branch. Do not merge without explicit instruction.
 
-Implementation commit: `bccd1cf737d9575a78c59e47346e00dce839f5b9`, branch `codex/humline-mvp`. [PR #1](https://github.com/The-John-Man/humline/pull/1) was opened against `The-John-Man/humline` `main`. Its state may change; do not assume it is still open or unmerged.
+## User decisions
 
-The environment offered no accessible browser-preview/port-forwarding capability during the previous access task. The fallback is the committed prebuilt ZIP, screenshots, checksums, and instructions in [review](../review/README.md). Localhost links only work on the machine running the server. Recheck current capabilities if preview access is requested again.
+1. Challenge rules preserved in [requirements](CHALLENGE_REQUIREMENTS.md).
+2. Clerk accounts with a **private cloud melody library**.
+3. Implementation authorized after the plan-first phase; continue fixing and finishing integration.
+4. Do not provision paid services, deploy publicly, or merge PRs without instruction.
 
-## Latest user decisions and scope
+## Open blockers
 
-1. User provided the challenge rules; [requirements](CHALLENGE_REQUIREMENTS.md) preserves their meaning and source.
-2. User asked to add Clerk accounts/authentication with a login page and necessary features, but explicitly requested research, a plan, and a draft **before making it**.
-3. Asked whether accounts should sync melodies, user chose: **“Include a private cloud melody library (recommended)”**.
-4. [CLERK_AUTH_PLAN.md](CLERK_AUTH_PLAN.md) contains official-documentation research, login/library wireframes, routes, ownership model, API proposal, migration, session/deletion behavior, implementation phases, and tests.
-5. Latest request: save the plan and necessary context files so another AI has context. That is the purpose of this handoff and the root [AGENTS.md](../AGENTS.md).
+1. **Clerk development instance** — need publishable key, secret key, webhook signing secret, and two test users for `npm run test:clerk`. Configure email verification, recovery, Google, and optional MFA in the Clerk Dashboard.
+2. **Hosting choice** — Node host + managed Postgres (or equivalent). Production domain and Clerk production instance not selected.
+3. Human microphone / human-hum quality and independent DAW checks remain user participation items.
 
-The planning/context files are saved in the workspace. They have not been committed or pushed as part of these planning turns; they are not included in the previously built release ZIPs. A new clone or another environment will need these files transferred or committed before it can see them. Check `git status` for the current state.
+## Local verification (this environment)
 
-## Recommendations awaiting implementation review
-
-- Keep React/Vite and use current `@clerk/react` with prebuilt auth/account components and React Router. Verify versions and official APIs at implementation time.
-- Email/password with email verification, Google sign-in, recovery, profile management, sign-out, and optional configured MFA.
-- Private My melodies library; cloud save/reopen, rename, duplicate, delete, revision conflicts, and explicit save-status feedback.
-- Small TypeScript Node/Express API plus PostgreSQL; same-origin frontend/API deployment recommended. Providers and resources are not selected or provisioned.
-- Cloud saves contain notes and settings. Original voice recordings and source filenames stay on-device.
-- Public synthetic demo; account-protected cloud library. Audio processing continues locally.
-
-These are draft choices, except the user's explicit selection of Clerk and the private cloud melody library. Do not describe the proposed features as working.
-
-## Next steps
-
-For a planning continuation, review or revise the Clerk proposal. Do not begin application changes until the user asks to proceed; this follows their explicit plan-first instruction.
-
-Once implementation is requested:
-
-1. Inspect current branch/PR state and choose the appropriate branch base.
-2. Select the user's Clerk app/development instance and hosting/database configuration. Use safe environment configuration for secrets; never request secrets in committed documents.
-3. Follow the six phases and acceptance criteria in the Clerk plan. Establish backend ownership checks and account-separated recovery before exposing a private library.
-4. Verify real Clerk development flows and cross-user API isolation, rerun the music regression suite, then update documentation/artifacts and prepare a reviewable follow-up PR.
-
-## Verification evidence
-
-At the October 24 access/review rerun, the unchanged implementation passed:
-
-- 20 logic tests across three files; all six supplied WAV fixtures.
-- TypeScript/Vite production build and formatting.
-- 11 production Chromium browser tests in 49.4 seconds.
-- Local HTTPS smoke test with a temporary self-signed certificate and synthetic microphone input.
-- Original context integrity: 26 files and six fixtures.
-- Committed static ZIP checksum and byte-for-byte comparison of all six files against the fresh production build.
-
-Environment: Node 24.19.0, npm 11.9.0, Chromium 154.0.8037.57, Debian 13. The browser server initially hit `listen EPERM` under the then-active sandbox; the successful run used approved execution outside it. Current permissions may differ. These are historical results, not tests of the Clerk proposal.
-
-Still unverified: physical microphone/output hardware, realistic human-hum accuracy, subjective instrument quality, independent DAW playback, Safari/Firefox, and physical mobile devices. See [verification details](VERIFICATION.md) and [limitations](IMPLEMENTATION.md).
+- `npm test`: 35 passed (includes library API with optional real `humline_test` Postgres).
+- `npm run build`: passed.
+- `npm run test:browser`: 13 passed.
+- `npm run test:https`: passed.
+- `npm run db:migrate`: applied `accounts` / `melodies` schema.
+- `npm run test:clerk`: **not run** (credentials unavailable).
 
 ## File map
 
 | Location | Context |
 |---|---|
-| `app/src/main.tsx` | Current minimal React mount; future Clerk provider/router entry |
-| `app/src/App.tsx` | Studio state, recording/conversion/playback, persistence and UI |
-| `app/src/state/project.ts` | Validation, undo/redo, canonical project persistence, shared localStorage key |
-| `app/src/types/project.ts` | Project/note schema |
-| `app/src/audio/`, `app/src/workers/` | Capture, decode, detection/segmentation, synthesis, transcription lifecycle |
-| `app/src/components/` | Piano roll, inspector, waveform, numeric input |
-| `app/src/music/midi.ts` | MIDI serialization and download |
-| `app/tests/` | Logic tests and production Playwright tests |
-| `docs/CLERK_AUTH_PLAN.md` | Current extension proposal and official research sources |
-| `humline-build-context/` | Immutable original specification and synthetic fixtures |
-| `review/` | Committed downloadable static app, checksums, screenshots, review instructions |
-| `scripts/package-release.py` | Generates source/static ZIPs; inspect exclusions when backend/auth files are introduced |
-| `release/` | Ignored generated artifacts; old archives do not automatically acquire new documentation |
+| `app/src/Root.tsx` | Clerk provider, routes, welcome/auth/account shell |
+| `app/src/cloud/` | Library, cloud studio, API client, deletion UI |
+| `app/src/App.tsx` | Studio state, recording/conversion/playback |
+| `app/server/` | Express API, repository, schema, Clerk auth/webhooks |
+| `compose.yaml` | Local Postgres 17 |
+| `docs/CLOUD_SETUP.md` | Setup, deletion, verification |
+| `docs/CLERK_AUTH_PLAN.md` | Design reference |
+| `humline-build-context/` | Immutable original specification and fixtures |
+| `review/` | Original MVP static artifacts |
+
+## Next steps
+
+1. User supplies Clerk development keys and confirms Dashboard auth options.
+2. Run `npm run test:clerk` and manual auth/deletion checks.
+3. User chooses hosting; prepare deployment docs for that host only after approval.
+4. Update PR #2 description with results and known limitations; do not merge until asked.

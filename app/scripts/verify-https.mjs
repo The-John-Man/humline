@@ -2,15 +2,34 @@
 import { createServer } from 'node:https';
 import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { resolve, extname } from 'node:path';
+import { resolve, extname, relative, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { chromium, expect } from '@playwright/test';
+function opensslBin() {
+  const candidates = [
+    process.env.OPENSSL_PATH,
+    'openssl',
+    'C:/Program Files/Git/usr/bin/openssl.exe',
+    'C:/Program Files/Git/mingw64/bin/openssl.exe',
+  ].filter(Boolean);
+  for (const bin of candidates) {
+    try {
+      execFileSync(bin, ['version'], { stdio: 'ignore' });
+      return bin;
+    } catch {
+      /* try next */
+    }
+  }
+  throw new Error(
+    'openssl not found on PATH. Install OpenSSL or Git for Windows, or set OPENSSL_PATH.',
+  );
+}
 const temp = mkdtempSync(resolve(tmpdir(), 'humline-tls-'));
 const root = resolve('dist');
 let server, browser;
 try {
   execFileSync(
-    'openssl',
+    opensslBin(),
     [
       'req',
       '-x509',
@@ -33,19 +52,20 @@ try {
   server = createServer(
     { key: readFileSync(resolve(temp, 'key.pem')), cert: readFileSync(resolve(temp, 'cert.pem')) },
     (req, res) => {
-      const path = resolve(
+      const file = resolve(
         root,
         req.url === '/' || req.url === '/demo'
           ? './index.html'
           : '.' + new URL(req.url, 'https://localhost').pathname,
       );
-      if (!path.startsWith(root + '/')) {
+      const rel = relative(root, file);
+      if (!rel || rel.startsWith('..') || rel.split(sep).includes('..')) {
         res.writeHead(403);
         res.end();
         return;
       }
       try {
-        const data = readFileSync(path);
+        const data = readFileSync(file);
         res.setHeader(
           'Content-Type',
           {
@@ -54,7 +74,7 @@ try {
             '.css': 'text/css',
             '.svg': 'image/svg+xml',
             '.wav': 'audio/wav',
-          }[extname(path)] ?? 'application/octet-stream',
+          }[extname(file)] ?? 'application/octet-stream',
         );
         res.end(data);
       } catch {
@@ -72,7 +92,8 @@ try {
     args: [
       '--no-sandbox',
       '--use-fake-device-for-media-stream',
-      `--use-file-for-fake-audio-capture=${resolve('../humline-build-context/fixtures/melody-clean.wav')}`,
+      '--use-fake-ui-for-media-stream',
+      `--use-file-for-fake-audio-capture=${resolve('../humline-build-context/fixtures/melody-clean.wav').replaceAll('\\', '/')}`,
     ],
   });
   const context = await browser.newContext({

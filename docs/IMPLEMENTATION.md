@@ -36,6 +36,8 @@ An inky navy studio, mint actions, lavender notes, system fonts, and local icons
 - Original audio is memory-only and does not survive refresh or travel in JSON/MIDI. LocalStorage can be unavailable or full; the UI reports save failure and JSON backup remains available.
 - Chromium on Linux is verified. Safari/Firefox, physical mobile devices, hardware microphones, and actual instrument timbre perception remain unverified. Codec availability varies by browser.
 - Timing can be affected by background-tab throttling or device suspension. Rehearse in an active tab on the demo computer.
-- No offline caching, accounts, cloud storage, polyphonic transcription, automatic accompaniment, audio export, or public deployment is included. These are outside this MVP's scope.
+- No offline service worker, polyphonic transcription, automatic accompaniment, or audio export in this release.
+- On the Clerk/library branch, accounts and PostgreSQL-backed private storage are implemented; original recordings still stay on-device. See [CLOUD_SETUP.md](CLOUD_SETUP.md).
+- Public deployment and a production Clerk instance are not provisioned until the user chooses a host.
 
-No autonomous agents, paid services, or backend were added. All runtime assets are bundled or served from the same static site; audio is never sent to a remote analysis service.
+Audio analysis never leaves the browser. Cloud payloads contain notes and settings only.
