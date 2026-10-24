@@ -14,7 +14,7 @@ test('production end-to-end: actual WAV, edit, undo/redo, presets, transport, MI
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto('/');
+  await page.goto('/demo');
   await example(page);
   await expect(
     page.getByText('SYNTHETIC EXAMPLE · Generated tones, not a human recording'),
@@ -44,9 +44,7 @@ test('production end-to-end: actual WAV, edit, undo/redo, presets, transport, MI
   const download = await downloadEvent;
   const path = await download.path();
   const midi = new Midi(new Uint8Array(await readFile(path!)));
-  const project = await page.evaluate(() =>
-    JSON.parse(localStorage.getItem('humline.project.v1')!),
-  );
+  const project = await page.evaluate(() => JSON.parse(localStorage.getItem('humline.demo.v1')!));
   expect(midi.tracks[0].notes[0].midi).toBe(72);
   expect(midi.tracks[0].notes[0].durationTicks / midi.header.ppq).toBe(2.5);
   expect(midi.tracks[0].notes[0].ticks / midi.header.ppq).toBe(0.5);
@@ -62,7 +60,7 @@ test('production end-to-end: actual WAV, edit, undo/redo, presets, transport, MI
 test('pointer drag and resize each create one history entry; keyboard edits, add and delete', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/demo');
   await example(page);
   const note = page.locator('.note').first();
   const before = await note.boundingBox();
@@ -93,7 +91,7 @@ test('pointer drag and resize each create one history entry; keyboard edits, add
 test('bad audio and silent input recover; project import validates before replacement', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/demo');
   await page
     .getByLabel('Import audio file')
     .setInputFiles({ name: 'bad.wav', mimeType: 'audio/wav', buffer: Buffer.from('bad wav') });
@@ -118,7 +116,7 @@ test('bad audio and silent input recover; project import validates before replac
 });
 test('permission denied is recoverable with import', async ({ page, context }) => {
   await context.clearPermissions();
-  await page.goto('/');
+  await page.goto('/demo');
   await page.getByRole('button', { name: 'Record a melody', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Microphone access was denied');
   await example(page);
@@ -138,7 +136,7 @@ test('browser microphone pipeline uses synthetic device; stop and cancel release
       return s;
     };
   });
-  await page.goto('/');
+  await page.goto('/demo');
   await page.getByRole('button', { name: 'Record a melody', exact: true }).click();
   await expect(page.getByText('Recording…', { exact: true })).toBeVisible();
   await page.waitForTimeout(2200);
@@ -165,7 +163,7 @@ test('browser microphone pipeline uses synthetic device; stop and cancel release
 });
 test('20-second microphone auto-stop releases device', async ({ page, context }) => {
   await context.grantPermissions(['microphone']);
-  await page.goto('/');
+  await page.goto('/demo');
   await page.getByRole('button', { name: 'Record a melody', exact: true }).click();
   await expect(page.getByText('Recording…', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Convert to notes' })).toBeVisible({
@@ -179,7 +177,7 @@ for (const viewport of [
 ])
   test(`responsive studio ${viewport.width}`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await page.goto('/');
+    await page.goto('/demo');
     await example(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
@@ -197,7 +195,7 @@ for (const viewport of [
 test('project JSON download/import retains edited state; undo restores the session source', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/demo');
   await example(page);
   await page.getByLabel('Project title').fill('My first melody');
   const tempo = page.getByLabel('Tempo', { exact: true });
@@ -231,7 +229,7 @@ test('all synthesis presets produce audio and Stop silences the output', async (
       return compressor;
     };
   });
-  await page.goto('/');
+  await page.goto('/demo');
   await example(page);
   for (const preset of ['Keys', 'Pluck', 'Pad']) {
     await page.getByRole('button', { name: preset, exact: true }).click();
@@ -261,7 +259,7 @@ test('all synthesis presets produce audio and Stop silences the output', async (
 });
 test('empty and edited studio pass automated accessibility checks', async ({ page }) => {
   const { default: AxeBuilder } = await import('@axe-core/playwright');
-  await page.goto('/');
+  await page.goto('/demo');
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,

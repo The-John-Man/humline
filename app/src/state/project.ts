@@ -113,9 +113,9 @@ export function redo(h: History): History {
     : h;
 }
 export const STORAGE_KEY = 'humline.project.v1';
-export function restore(): { project: HumlineProject; warning?: string } {
+export function restore(storageKey = STORAGE_KEY): { project: HumlineProject; warning?: string } {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(storageKey);
     return { project: saved ? parseProject(saved) : newProject() };
   } catch {
     return {

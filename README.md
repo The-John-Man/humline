@@ -4,6 +4,14 @@
 
 The implemented loop is **Record / import → Convert → Edit → Play → Export MIDI**. The synthetic example is analysed from its WAV file using the same worker as user audio. No prerecorded note list substitutes for transcription.
 
+## Accounts and cloud library integration
+
+This branch includes Clerk authentication pages and a PostgreSQL-backed private melody library. **Live accounts require configuration and have not yet been verified against a real Clerk instance.** Follow [cloud setup and current verification](docs/CLOUD_SETUP.md). The public local studio is now at `/demo`; the root page is the welcome screen. Older static ZIPs in `review/` contain the original MVP, not this integration. Historical local-only instructions below apply to that MVP or the current public demo.
+
+## Contributor and AI context
+
+Start with [AGENTS.md](AGENTS.md) and the [current handoff](docs/HANDOFF.md). The [challenge requirements](docs/CHALLENGE_REQUIREMENTS.md) capture the user-supplied brief. The [Clerk accounts and private library plan](docs/CLERK_AUTH_PLAN.md) is a researched proposal with screen drafts; the proposal is now being implemented; see the cloud setup document for current status. The instructions below describe the working local music MVP.
+
 ## Run
 
 Use Node **22.12+** (Node 24 recommended) and npm. From the repository root:

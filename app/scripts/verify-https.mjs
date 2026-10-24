@@ -35,9 +35,9 @@ try {
     (req, res) => {
       const path = resolve(
         root,
-        '.' +
-          new URL(req.url, 'https://localhost').pathname +
-          (req.url === '/' ? 'index.html' : ''),
+        req.url === '/' || req.url === '/demo'
+          ? './index.html'
+          : '.' + new URL(req.url, 'https://localhost').pathname,
       );
       if (!path.startsWith(root + '/')) {
         res.writeHead(403);
@@ -82,7 +82,7 @@ try {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto(`https://127.0.0.1:${port}`);
+  await page.goto(`https://127.0.0.1:${port}/demo`);
   expect(await page.evaluate(() => window.isSecureContext)).toBe(true);
   await page.getByRole('button', { name: /Try a synthetic example/ }).click();
   await page.getByRole('button', { name: 'Convert to notes' }).click();

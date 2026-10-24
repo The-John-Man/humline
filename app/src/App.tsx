@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   AudioLines,
   Mic,
@@ -88,8 +88,22 @@ function ConfirmDialog({ value, onClose }: { value: Confirm; onClose: () => void
     </dialog>
   );
 }
-export default function App() {
-  const [initial] = useState(restore);
+export default function App({
+  initialProject,
+  storageKey = STORAGE_KEY,
+  onProjectChange,
+  cloudToolbar,
+}: {
+  initialProject?: HumlineProject;
+  storageKey?: string | null;
+  onProjectChange?: (project: HumlineProject) => void;
+  cloudToolbar?: ReactNode;
+}) {
+  const [initial] = useState(() =>
+    initialProject
+      ? { project: initialProject, warning: undefined }
+      : restore(storageKey ?? undefined),
+  );
   const [history, setHistory] = useState<History>({
     past: [],
     present: initial.project,
@@ -164,13 +178,15 @@ export default function App() {
     setSelected(null);
   };
   useEffect(() => {
+    onProjectChange?.(project);
+    if (storageKey === null) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(project));
+      localStorage.setItem(storageKey, JSON.stringify(project));
       setSaved(true);
     } catch {
       setSaved(false);
     }
-  }, [project]);
+  }, [project, storageKey, onProjectChange]);
   useEffect(
     () => () => {
       operation.current++;
@@ -426,8 +442,9 @@ export default function App() {
   }
   return (
     <div className="app-shell">
+      {cloudToolbar}
       <header className="topbar">
-        <a className="brand" href="./" aria-label="Humline home">
+        <a className="brand" href={cloudToolbar ? undefined : '/'} aria-label="Humline home">
           <span className="brand-icon">
             <AudioLines size={24} />
           </span>
@@ -445,7 +462,11 @@ export default function App() {
           />
           <span className={saved ? '' : 'save-warning'}>
             {saved ? <Check size={12} /> : <Info size={12} />}{' '}
-            {saved ? 'Saved on this device' : 'Local save unavailable · download JSON'}
+            {cloudToolbar
+              ? 'Cloud save status above'
+              : saved
+                ? 'Saved on this device'
+                : 'Local save unavailable · download JSON'}
           </span>
         </div>
         <div className="header-actions">
@@ -872,7 +893,11 @@ export default function App() {
           <span>
             <ShieldCheck size={15} /> Your audio stays in your browser.
           </span>
-          <span>Notes save locally. Original audio lasts for this session.</span>
+          <span>
+            {cloudToolbar
+              ? 'Notes sync when saved. Original audio lasts for this session.'
+              : 'Notes save locally. Original audio lasts for this session.'}
+          </span>
         </div>
       </main>
       <footer>
