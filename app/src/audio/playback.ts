@@ -11,7 +11,9 @@ export class AudioEngine {
   private offset = 0;
   private length = 0;
   private bpm = 100;
-  private volume = 0.65;
+  /** Linear 0–1 control; multiplied by MASTER for audible headroom without clipping easily. */
+  private volume = 0.8;
+  private static readonly MASTER = 0.85;
   private commandVersion = 0;
   playing = false;
   mode: 'instrument' | 'original' = 'instrument';
@@ -19,7 +21,7 @@ export class AudioEngine {
     if (!this.context) {
       this.context = new AudioContext();
       this.master = this.context.createGain();
-      this.master.gain.value = this.volume * 0.3;
+      this.master.gain.value = this.volume * AudioEngine.MASTER;
       const compressor = this.context.createDynamicsCompressor();
       this.master.connect(compressor);
       compressor.connect(this.context.destination);
@@ -29,7 +31,12 @@ export class AudioEngine {
   }
   setVolume(value: number) {
     this.volume = value;
-    this.master?.gain.setTargetAtTime(value * 0.3, this.context!.currentTime, 0.015);
+    if (this.master && this.context)
+      this.master.gain.setTargetAtTime(
+        value * AudioEngine.MASTER,
+        this.context.currentTime,
+        0.015,
+      );
   }
   private voice(
     midi: number,

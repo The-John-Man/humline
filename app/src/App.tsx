@@ -126,7 +126,7 @@ export default function App({
   const [mode, setMode] = useState<'instrument' | 'original'>('instrument');
   const [playhead, setPlayhead] = useState(0);
   const [originalProgress, setOriginalProgress] = useState(0);
-  const [volume, setVolume] = useState(65);
+  const [volume, setVolume] = useState(80);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
   const [about, setAbout] = useState(false);
   const [engine] = useState(() => new AudioEngine());
@@ -496,6 +496,7 @@ export default function App({
           </button>
           <button
             className="primary export-button"
+            title="Download a .mid file for GarageBand, Logic, Ableton, FL Studio, and other DAWs"
             disabled={!project.notes.length || locked}
             onClick={() => {
               download(
@@ -504,7 +505,7 @@ export default function App({
                 'mid',
               );
               notify(
-                'MIDI download started with your current edits and tempo. MIDI stores notes, not your voice or the exact synth sound.',
+                'MIDI downloaded. Open the .mid in GarageBand (File → Open), Logic, Ableton, or another DAW. Notes and tempo travel with the file; your hum and Humline synth sound do not.',
               );
             }}
           >
@@ -871,6 +872,9 @@ export default function App({
                       engine.setVolume(+e.target.value / 100);
                     }}
                   />
+                  <span className="volume-value" aria-hidden="true">
+                    {volume}%
+                  </span>
                 </div>
               </div>
             </div>
@@ -957,8 +961,9 @@ function About({ onClose }: { onClose: () => void }) {
         and repeated notes can need correction.
       </p>
       <p>
-        Keys, Pluck, and Pad are synthesised sounds, not sampled acoustic instruments. MIDI export
-        uses @tonejs/midi and standard instrument programs, so other music apps may sound different.
+        Keys, Pluck, and Pad are synthesised sounds, not sampled acoustic instruments. Export MIDI
+        downloads a standard .mid file you can open in GarageBand, Logic Pro, Ableton, FL Studio,
+        and similar apps. Those apps choose their own sounds, so playback will differ from Humline.
       </p>
       <p>
         Notes, tempo, and instrument save on this device. Original audio stays in memory for this
