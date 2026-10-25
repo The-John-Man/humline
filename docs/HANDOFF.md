@@ -8,7 +8,7 @@ Humline is a React/TypeScript/Vite browser music studio plus Clerk accounts and 
 
 Working loop: Record/import → Convert → Piano-roll edit → Instrument playback → MIDI export. Audio analysis runs locally in a worker with Pitchy. Cloud saves store notes/settings only.
 
-**Public static demo (GitHub Pages):** https://the-john-man.github.io/humline/demo — studio only; no Clerk, API, or Postgres. Deployed by `.github/workflows/pages.yml` on push to `main` (enable Pages source = GitHub Actions once).
+**Public static demo (GitHub Pages):** https://the-john-man.github.io/humline/demo/ — studio only; no Clerk, API, or Postgres. Deployed by `.github/workflows/pages.yml` on push to `main` (Pages build type = workflow).
 
 Integration history: Clerk/library, app-owned account deletion with reverification, post-save studio navigation, safer auth redirects, Windows-friendly browser/HTTPS verification, louder default playback volume, and MIDI export copy for DAWs (including GarageBand).
 
