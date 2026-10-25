@@ -1,0 +1,139 @@
+{
+  "package": "Humline Build Context",
+  "version": 1,
+  "preparedDate": "2026-10-23",
+  "timezone": "America/Toronto",
+  "status": "Planning and handoff materials; application implementation not included.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 1161,
+      "sha256": "9274ca802eae3a7f25a033c44a84fb852041f1edd83d3375b2e6b26b1f076bf2"
+    },
+    {
+      "path": "BUILD_PROMPT.md",
+      "bytes": 2442,
+      "sha256": "6f08347fabd06a38e27c3e23ad2757e2811ef16df21cac25ee7ff7608e75b55c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2157,
+      "sha256": "54eed2c9e1b5f251c7be30474136ba4c88a23bcad75def035fb455bdaf6e49c0"
+    },
+    {
+      "path": "docs/01_CONTEXT.md",
+      "bytes": 2295,
+      "sha256": "65fe8e4f0a6e7c26615f72e267105a89cc569619e3186d11d3b436a1d61e2d0a"
+    },
+    {
+      "path": "docs/02_PRODUCT.md",
+      "bytes": 4042,
+      "sha256": "bd294de56ce43c191a9968bbf2c80aeb1b1b3d04aef2d0a9411534c7b0b535ff"
+    },
+    {
+      "path": "docs/03_ARCHITECTURE.md",
+      "bytes": 3925,
+      "sha256": "2014367249fab352b8321e33709a17efb5d81c90fc0e038304f6025dd7fea37e"
+    },
+    {
+      "path": "docs/04_AUDIO.md",
+      "bytes": 4667,
+      "sha256": "6c2c23cb0c1000bf647aa98e05ac1530ff28f5ee981f733caad489db96404d16"
+    },
+    {
+      "path": "docs/05_DESIGN.md",
+      "bytes": 3389,
+      "sha256": "3e93a1fb6a4d8ee415521f3629d16f55b7e71ee36f0d4c67edb1e16dde3d8eb1"
+    },
+    {
+      "path": "docs/06_PLAN.md",
+      "bytes": 3613,
+      "sha256": "2a5a1f8d3fb1446d61b1871ac1dd4fa21539dae4145d3752c2f0f42925ec4968"
+    },
+    {
+      "path": "docs/07_ACCEPTANCE.md",
+      "bytes": 4139,
+      "sha256": "51fb257e4ae7dc71ec7f5e6e4a822af6a5037cf4e6afc39f5037b08f7e44686e"
+    },
+    {
+      "path": "docs/08_DEMO.md",
+      "bytes": 2096,
+      "sha256": "7e7b6f9aadbcbc120d6f565474bcbb8e1f1c71d440a607d62191a0d1cf14496e"
+    },
+    {
+      "path": "docs/09_DECISIONS.md",
+      "bytes": 3330,
+      "sha256": "4f85991da7322312f9b9a708b4df0a87528ad001ef9e7f782b864e15e3b3fc90"
+    },
+    {
+      "path": "docs/10_SOURCES.md",
+      "bytes": 1906,
+      "sha256": "5f3adc5bcb0e05443c3f73b29dab8e8cd26995600d9d5010b2ae2495b8a0a342"
+    },
+    {
+      "path": "fixtures/README.md",
+      "bytes": 1279,
+      "sha256": "1c5e3528735715027cd97d63e750e3d6f4fba96808e9ff7c50d9cffa61786c2a"
+    },
+    {
+      "path": "fixtures/example-project.json",
+      "bytes": 1407,
+      "sha256": "4ceeb7257bf26162947ee118e38caca84667b2d7c136ffd23b109d2b818e6766"
+    },
+    {
+      "path": "fixtures/expected-events.json",
+      "bytes": 2715,
+      "sha256": "ba23dbb715723d08755fd7a1e4e7bdaa7471c0f2fe7b53433a71d3d182a321f8"
+    },
+    {
+      "path": "fixtures/melody-48k-stereo.wav",
+      "bytes": 1171244,
+      "sha256": "0d20989d6707bb08fe0ec577b7147d9d73bd128d61abcbbf9c416f0b01e11cb3"
+    },
+    {
+      "path": "fixtures/melody-clean.wav",
+      "bytes": 538064,
+      "sha256": "e6de3ea592b677824070550ab77cbe1dc1521ab2a9ba48fc8cb63e4cd9fef4dd"
+    },
+    {
+      "path": "fixtures/noise.wav",
+      "bytes": 88244,
+      "sha256": "3a6581b55c7e98683955838b04280e90659d0e7884ad08fbb3e44f32bca8c7e9"
+    },
+    {
+      "path": "fixtures/repeated-note.wav",
+      "bytes": 167624,
+      "sha256": "9a9fb4194d7dbf52895d969935c0615eaadc89841bbd33d854430e18b4154c59"
+    },
+    {
+      "path": "fixtures/silence.wav",
+      "bytes": 88244,
+      "sha256": "5ba66f0b9a8dd400b3037d65e5febd0620a46b9f03b9f913e00e02fca7830685"
+    },
+    {
+      "path": "fixtures/vibrato.wav",
+      "bytes": 194084,
+      "sha256": "57d5176e3d2693ea08dab65b721e2f901341407714cbaf76c266df214c7ba0cf"
+    },
+    {
+      "path": "reference/design-tokens.css",
+      "bytes": 404,
+      "sha256": "43832097b5010e966705c7b9a48097a577b827ea4995f26becebc47790ea8dfa"
+    },
+    {
+      "path": "reference/types.ts",
+      "bytes": 1299,
+      "sha256": "36852f4a947d97104726b0e7be279395f4f4ba76b1ea39cb3a31fb1b38a99afb"
+    },
+    {
+      "path": "scripts/generate-fixtures.mjs",
+      "bytes": 3771,
+      "sha256": "602c6d40bc5822f0dd8813a8b65d0dc050f07f6ec69811520addead1fbf7ad01"
+    },
+    {
+      "path": "scripts/verify-package.mjs",
+      "bytes": 3374,
+      "sha256": "2f91604192c41f711283915209cf97a22c0fe98383b8cc3685a765c766a7a48b"
+    }
+  ]
+}

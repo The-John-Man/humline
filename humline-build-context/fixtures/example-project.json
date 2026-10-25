@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "humline-synthetic-example",
+  "title": "Synthetic example melody",
+  "bpm": 100,
+  "transcriptionBpm": 100,
+  "instrument": "keys",
+  "notes": [
+    {
+      "id": "example-note-1",
+      "midi": 57,
+      "startBeat": 0.5833333333333334,
+      "durationBeats": 1.0833333333333333,
+      "velocity": 0.75,
+      "source": "manual"
+    },
+    {
+      "id": "example-note-2",
+      "midi": 60,
+      "startBeat": 1.9166666666666665,
+      "durationBeats": 1.0833333333333333,
+      "velocity": 0.75,
+      "source": "manual"
+    },
+    {
+      "id": "example-note-3",
+      "midi": 64,
+      "startBeat": 3.25,
+      "durationBeats": 1.5833333333333333,
+      "velocity": 0.75,
+      "source": "manual"
+    },
+    {
+      "id": "example-note-4",
+      "midi": 62,
+      "startBeat": 5.083333333333333,
+      "durationBeats": 1.0833333333333333,
+      "velocity": 0.75,
+      "source": "manual"
+    },
+    {
+      "id": "example-note-5",
+      "midi": 60,
+      "startBeat": 6.416666666666667,
+      "durationBeats": 1.0833333333333333,
+      "velocity": 0.75,
+      "source": "manual"
+    },
+    {
+      "id": "example-note-6",
+      "midi": 57,
+      "startBeat": 7.750000000000001,
+      "durationBeats": 2,
+      "velocity": 0.75,
+      "source": "manual"
+    }
+  ],
+  "sourceAudio": {
+    "name": "melody-clean.wav",
+    "durationSeconds": 6.1,
+    "synthetic": true
+  }
+}

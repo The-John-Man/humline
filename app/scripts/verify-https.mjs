@@ -1,0 +1,124 @@
+// Local TLS smoke test only. Temporary self-signed keys are never packaged.
+import { createServer } from 'node:https';
+import { readFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve, extname, relative, sep } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { chromium, expect } from '@playwright/test';
+function opensslBin() {
+  const candidates = [
+    process.env.OPENSSL_PATH,
+    'openssl',
+    'C:/Program Files/Git/usr/bin/openssl.exe',
+    'C:/Program Files/Git/mingw64/bin/openssl.exe',
+  ].filter(Boolean);
+  for (const bin of candidates) {
+    try {
+      execFileSync(bin, ['version'], { stdio: 'ignore' });
+      return bin;
+    } catch {
+      /* try next */
+    }
+  }
+  throw new Error(
+    'openssl not found on PATH. Install OpenSSL or Git for Windows, or set OPENSSL_PATH.',
+  );
+}
+const temp = mkdtempSync(resolve(tmpdir(), 'humline-tls-'));
+const root = resolve('dist');
+let server, browser;
+try {
+  execFileSync(
+    opensslBin(),
+    [
+      'req',
+      '-x509',
+      '-newkey',
+      'rsa:2048',
+      '-nodes',
+      '-keyout',
+      resolve(temp, 'key.pem'),
+      '-out',
+      resolve(temp, 'cert.pem'),
+      '-days',
+      '1',
+      '-subj',
+      '/CN=localhost',
+      '-addext',
+      'subjectAltName=DNS:localhost,IP:127.0.0.1',
+    ],
+    { stdio: 'ignore' },
+  );
+  server = createServer(
+    { key: readFileSync(resolve(temp, 'key.pem')), cert: readFileSync(resolve(temp, 'cert.pem')) },
+    (req, res) => {
+      const file = resolve(
+        root,
+        req.url === '/' || req.url === '/demo'
+          ? './index.html'
+          : '.' + new URL(req.url, 'https://localhost').pathname,
+      );
+      const rel = relative(root, file);
+      if (!rel || rel.startsWith('..') || rel.split(sep).includes('..')) {
+        res.writeHead(403);
+        res.end();
+        return;
+      }
+      try {
+        const data = readFileSync(file);
+        res.setHeader(
+          'Content-Type',
+          {
+            '.html': 'text/html',
+            '.js': 'text/javascript',
+            '.css': 'text/css',
+            '.svg': 'image/svg+xml',
+            '.wav': 'audio/wav',
+          }[extname(file)] ?? 'application/octet-stream',
+        );
+        res.end(data);
+      } catch {
+        res.writeHead(404);
+        res.end();
+      }
+    },
+  );
+  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  const port = server.address().port;
+  browser = await chromium.launch({
+    executablePath:
+      process.env.CHROMIUM_PATH ||
+      (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined),
+    args: [
+      '--no-sandbox',
+      '--use-fake-device-for-media-stream',
+      '--use-fake-ui-for-media-stream',
+      `--use-file-for-fake-audio-capture=${resolve('../humline-build-context/fixtures/melody-clean.wav').replaceAll('\\', '/')}`,
+    ],
+  });
+  const context = await browser.newContext({
+    ignoreHTTPSErrors: true,
+    permissions: ['microphone'],
+  });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto(`https://127.0.0.1:${port}/demo`);
+  expect(await page.evaluate(() => window.isSecureContext)).toBe(true);
+  await page.getByRole('button', { name: /Try a synthetic example/ }).click();
+  await page.getByRole('button', { name: 'Convert to notes' }).click();
+  await expect(page.locator('.note')).toHaveCount(6);
+  await page.getByRole('button', { name: 'Record a melody', exact: true }).click();
+  await expect(page.getByText('Recording…', { exact: true })).toBeVisible();
+  await page.waitForTimeout(1800);
+  await page.getByRole('button', { name: 'Stop recording' }).click();
+  await expect(page.getByRole('button', { name: 'Convert to notes' })).toBeVisible();
+  expect(errors).toEqual([]);
+  console.log(
+    'PASS: production assets, transcription worker and synthetic microphone capture on local HTTPS. Certificate trust errors were ignored for this ephemeral self-signed test.',
+  );
+} finally {
+  await browser?.close();
+  if (server) await new Promise((r) => server.close(r));
+  rmSync(temp, { recursive: true, force: true });
+}
