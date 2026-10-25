@@ -66,10 +66,32 @@ Verified environment: Node 24.19.0, npm 11.9.0, Chromium 154.0.8037.57, Debian G
 
 ## Deploy
 
+### Public static demo (GitHub Pages)
+
+Free demo (no accounts / no cloud library):
+
+**https://the-john-man.github.io/humline/demo**
+
+Pushes to `main` build with `--base=/humline/` and deploy via [`.github/workflows/pages.yml`](.github/workflows/pages.yml). First time only: repo **Settings → Pages → Source: GitHub Actions**.
+
+Local check of the same build:
+
+```sh
+cd app
+npm ci
+npm run build -- --base=/humline/
+cp dist/index.html dist/404.html
+npx vite preview --base=/humline/
+```
+
+Open `http://localhost:4173/humline/demo`. Recording still needs localhost or HTTPS.
+
+### Full app
+
 - **Demo-only static site:** `app/dist/` after `npm run build`. No accounts/library.
 - **Full app (accounts + library):** Node host serving the Express API and built frontend (`npm start` in `app/`), plus PostgreSQL and Clerk environment variables. See [cloud setup](docs/CLOUD_SETUP.md). A static-only ZIP cannot provide the private library.
 
-No production host has been chosen or provisioned. Ask before deploying publicly or enabling paid services. Local HTTPS was exercised with a temporary self-signed certificate.
+No Node + Postgres production host has been chosen. Ask before provisioning paid services. Local HTTPS was exercised with a temporary self-signed certificate.
 
 ## Source and handoff
 

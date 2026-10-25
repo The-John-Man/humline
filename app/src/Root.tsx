@@ -229,9 +229,11 @@ export default function Root() {
       <>
         <div className="cloud-toolbar">
           <Link to="/">← Home</Link>
-          <strong>Local demo</strong>
-          <span>Save JSON to keep your work. Sign in for a cloud library.</span>
-          <Link to="/sign-in">Sign in</Link>
+          <strong>Public demo</strong>
+          <span>
+            Studio only — save project JSON to keep your work. Cloud library needs a full Node +
+            Clerk deploy.
+          </span>
         </div>
         <App storageKey="humline.demo.v1" />
       </>
@@ -247,7 +249,7 @@ export default function Root() {
           This build needs its Clerk publishable key and a connected library API before sign-in is
           available.
         </p>
-        <Link to="/demo">Open the local demo</Link>
+        <Link to="/demo">Open the public demo</Link>
       </main>
     );
   return (
