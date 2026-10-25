@@ -84,7 +84,7 @@ cp dist/index.html dist/404.html
 npx vite preview --base=/humline/
 ```
 
-Open `http://localhost:4173/humline/demo`. Recording still needs localhost or HTTPS.
+Open `http://localhost:4173/humline/demo/` (trailing slash). Recording still needs localhost or HTTPS.
 
 ### Full app
 

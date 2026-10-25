@@ -31,7 +31,11 @@ jobs:
           npm run build -- --base=/humline/
       - name: SPA fallback for GitHub Pages
         working-directory: app
-        run: cp dist/index.html dist/404.html
+        run: |
+          cp dist/index.html dist/404.html
+          # Project Pages soft-404 is unreliable; publish /demo as a real path.
+          mkdir -p dist/demo
+          cp dist/index.html dist/demo/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: app/dist
